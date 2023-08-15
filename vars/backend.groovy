@@ -7,7 +7,7 @@ void call() {
     String demoRegistry = "218220206490.dkr.ecr.us-east-1.amazonaws.com"
     String awsRegion = "us-east-1"
     String ecrRegistryUrl = "https://218220206490.dkr.ecr.us-east-1.amazonaws.com"
-    String awsCredential = "aws-credentials"
+    String awsCredential = 'aws-credentials'
 
 //========================================================================
 //========================================================================
