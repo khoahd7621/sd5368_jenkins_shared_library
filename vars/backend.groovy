@@ -4,7 +4,7 @@ void call() {
     String buildFolder = "backend"
     String baseImage = "node"
     String baseTag = "lts-buster"
-    String demoRegistry = "218220206490.dkr.ecr.us-east-1.amazonaws.com"
+    String repoRegistry = "218220206490.dkr.ecr.us-east-1.amazonaws.com"
     String awsRegion = "us-east-1"
     String ecrRegistryUrl = "https://218220206490.dkr.ecr.us-east-1.amazonaws.com"
     String awsCredential = 'aws-credentials'
@@ -33,11 +33,12 @@ void call() {
 
     stage("Push Docker Images") {
         echo "Push Docker Images"
-        docker.withRegistry(ecrRegistryUrl, "ecr:${awsRegion}:${awsCredential}") {
-            sh "docker tag ecr-khoahd7621-devops-${name}:${BUILD_NUMBER} ${demoRegistry}/ecr-khoahd7621-devops-${name}:${BUILD_NUMBER}"
-            sh "docker push ${demoRegistry}/ecr-khoahd7621-devops-${name}:${BUILD_NUMBER}"
-            sh "docker tag ${demoRegistry}/ecr-khoahd7621-devops-${name}:${BUILD_NUMBER} ${demoRegistry}/ecr-khoahd7621-devops-${name}:latest"
-            sh "docker push ${demoRegistry}/ecr-khoahd7621-devops-${name}:latest"
+        script {
+            sh "aws ecr get-login-password --region ${awsRegion} | docker login --username AWS --password-stdin ${repoRegistry}"
+            sh "docker tag ecr-khoahd7621-devops-${name}:${BUILD_NUMBER} ${repoRegistry}/practical_devops_sd5368_ecr_repo:${BUILD_NUMBER}"
+            sh "docker push ${repoRegistry}/practical_devops_sd5368_ecr_repo:${BUILD_NUMBER}"
+            sh "docker tag ${repoRegistry}/practical_devops_sd5368_ecr_repo:${BUILD_NUMBER} ${repoRegistry}/practical_devops_sd5368_ecr_repo:backend-latest"
+            sh "docker push ${repoRegistry}/practical_devops_sd5368_ecr_repo:backend-latest"
         }
     }
 }
