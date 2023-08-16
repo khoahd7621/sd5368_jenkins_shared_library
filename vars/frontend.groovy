@@ -23,7 +23,7 @@ void call() {
     stage("Build Solution") {
         echo "Build Solution"
         docker.build("practical_devops_sd5368_${name}:${BUILD_NUMBER}", " -f ./.ci/Dockerfile \
-        --build-arg BASEIMG=${demoImage} --build-arg IMG_VERSION=${baseTag} ${WORKSPACE}/src/${buildFolder}") 
+        --build-arg BASEIMG=${demoImage} --build-arg IMG_VERSION=${baseTag} ${WORKSPACE}/src/${buildFolder} --no-cache") 
     }
 
     stage("Push Docker Images") {

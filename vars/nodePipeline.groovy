@@ -12,26 +12,42 @@ void call(Map pipelineParams) {
         }
         
         stages {
-            stage ('Build Backend') {
+            stage('Initial Build') {
                 when {
-                    allOf {
-                        // Condition Check
-                        anyOf {
-                            // Branch Event: Nornal Flow
-                            anyOf {
-                                branch 'main'
-                                branch 'PR-*'
-                            }
-                            // Manual Run: Only if checked.
-                            allOf {
-                                changeset "**/backend/**"
-                            }
-                        }
+                    expression {
+                        return !fileExists("${env.WORKSPACE}/initial-build-done")
                     }
                 }
                 steps {
                     script {
+                        // Build both backend and frontend here
                         backend()
+                        frontend()
+
+                        // Create a file to indicate initial build is done
+                        writeFile file: "${env.WORKSPACE}/initial-build-done", text: ""
+                    }
+                }
+            }
+
+            stage('Build Backend') {
+                when {
+                    changeset "**/src/backend/**"
+                }
+                steps {
+                    script {
+                        backend()
+                    }
+                }
+            }
+
+            stage('Build Frontend') {
+                when {
+                    changeset "**/src/frontend/**"
+                }
+                steps {
+                    script {
+                        frontend()
                     }
                 }
             }
