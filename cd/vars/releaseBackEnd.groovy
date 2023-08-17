@@ -15,7 +15,6 @@ void call() {
     stage ('Prepare Package') {
         script {
             writeFile file: '.ci/service/deployment.yml', text: libraryResource('deploy/eks/service/deployment.yml')
-            writeFile file: '.ci/service/service.yml', text: libraryResource('deploy/eks/service/service.yml')
         }
     }
 
@@ -23,10 +22,9 @@ void call() {
         script {
             sh "aws ecr get-login-password --region ${awsRegion} | docker login --username AWS --password-stdin ${demoRegistry}"
             sh "export registry=${demoRegistry}; export appname=${name}; export tag=latest; \
-            envsubst < .ci/service/deployment.yml > deployment.yml; envsubst < .ci/service/service.yml > service.yml"
+            envsubst < .ci/service/deployment.yml > deployment.yml"
             sh "aws eks --region ${awsRegion} update-kubeconfig --name ${eksName}"
             sh "kubectl apply -f deployment.yml"
-            sh "kubectl apply -f service.yml"
         }
     }
 }
