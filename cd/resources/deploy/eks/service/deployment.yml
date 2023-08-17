@@ -1,11 +1,9 @@
 apiVersion: v1
 kind: Service
-spec:
-  selector:
-    app: ${appname}
 metadata:
   name: ${appname}
-  labels:
+spec:
+  selector:
     app: ${appname}
   ports:
     - port: 3000
